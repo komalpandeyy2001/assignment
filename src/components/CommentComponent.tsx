@@ -6,6 +6,8 @@ import { useState, useRef, useEffect } from "react";
  * @typedef {{ id: number; author: string; avatar: string; time: string; text: string; file?: { name: string; size: string } }} CommentEntry
  */
 
+
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 const CURRENT_VALUE = "The quick brown fox jumps over the lazy dog";
 
@@ -23,7 +25,7 @@ const INITIAL_COMMENTS = [
 ];
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
-function Avatar({ initials, color }) {
+function Avatar({ initials, color } : any) {
   return (
     <div
       className={`w-8 h-8 rounded-full ${color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}
@@ -34,7 +36,7 @@ function Avatar({ initials, color }) {
 }
 
 // ─── File Attachment Row ──────────────────────────────────────────────────────
-function FileAttachment({ name, size, onRemove }) {
+function FileAttachment({ name, size, onRemove }: any) {
   return (
     <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-3 py-3 shadow-sm">
 
@@ -116,13 +118,13 @@ function FileAttachment({ name, size, onRemove }) {
   );
 }
 // ─── Single Field Comment Panel (first image design) ─────────────────────────
-function FieldCommentPanel({ onClose }) {
+function FieldCommentPanel({ onClose } : any) {
   const [state, setState] = useState(/** @type {CommentState} */("initial"));
   const [fieldValue, setFieldValue] = useState("");
   const [comment, setComment] = useState("");
-  const [file, setFile] = useState(/** @type {File|null} */(null));
-  const [submittedData, setSubmittedData] = useState(null);
-  const fileInputRef = useRef(null);
+const [file, setFile] = useState<any>(null);
+ const [submittedData, setSubmittedData] = useState<any>(null);
+const fileInputRef = useRef<any>(null);
 
   const isEditing = fieldValue.trim() || comment.trim() || file;
 
@@ -160,8 +162,7 @@ function FieldCommentPanel({ onClose }) {
   function handleDelete() {
     handleDiscard();
   }
-
-  function formatSize(bytes) {
+function formatSize(bytes: any) {
     if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
     if (bytes >= 1024) return `${(bytes / 1024).toFixed(1)}KB`;
     return `${bytes}B`;
@@ -289,9 +290,9 @@ function FieldCommentPanel({ onClose }) {
 }
 
 // ─── Comments Dialog (second image functionality) ─────────────────────────────
-function CommentsDialog({ isOpen, onClose, comments, onAddComment }) {
+function CommentsDialog({ isOpen, onClose, comments, onAddComment } : any) {
   const [newComment, setNewComment] = useState("");
-  const listRef = useRef(null);
+ const listRef = useRef<any>(null);
 
   function handleSubmit() {
     if (!newComment.trim()) return;
@@ -429,7 +430,7 @@ export default function CommentComponent() {
   const [comments, setComments] = useState(INITIAL_COMMENTS);
   const [showFieldPanel, setShowFieldPanel] = useState(true);
 
-  function handleAddComment(newComment) {
+ function handleAddComment(newComment: any) {
     setComments((prev) => [...prev, newComment]);
   }
 
