@@ -36,7 +36,7 @@ function Avatar({ initials, color } : any) {
 }
 
 // ─── File Attachment Row ──────────────────────────────────────────────────────
-function FileAttachment({ name, size, onRemove }: any) {
+function FileAttachment({ name, size }: any) {
   return (
     <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-3 py-3 shadow-sm">
 
@@ -118,7 +118,7 @@ function FileAttachment({ name, size, onRemove }: any) {
   );
 }
 // ─── Single Field Comment Panel (first image design) ─────────────────────────
-function FieldCommentPanel({ onClose } : any) {
+function FieldCommentPanel() {
   const [state, setState] = useState(/** @type {CommentState} */("initial"));
   const [fieldValue, setFieldValue] = useState("");
   const [comment, setComment] = useState("");
@@ -229,7 +229,7 @@ function formatSize(bytes: any) {
         <input
           type="text"
           value={fieldValue}
-          onChange={(e) => setFieldValue(e.target.value)}
+          onChange={(e: any)  => setFieldValue(e.target.value)}
           placeholder="Placeholder"
           className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors"
         />
@@ -240,7 +240,7 @@ function formatSize(bytes: any) {
         <label className="text-xs text-gray-400 block mb-1">Comment</label>
         <textarea
           value={comment}
-          onChange={(e) => setComment(e.target.value)}
+        onChange={(e: any) => setComment(e.target.value)}
           placeholder="Please provide a reason for the change"
           rows={3}
           className="w-full border border-gray-300 rounded px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-gray-400 resize-none transition-colors"
@@ -265,7 +265,7 @@ function formatSize(bytes: any) {
           ref={fileInputRef}
           type="file"
           className="hidden"
-          onChange={(e) => setFile(e.target.files?.[0] || null)}
+          onChange={(e: any)  => setFile(e.target.files?.[0] || null)}
         />
       </div>
 
@@ -349,7 +349,7 @@ function CommentsDialog({ isOpen, onClose, comments, onAddComment } : any) {
         >
 
 
-          {comments.map((c) => (
+   {comments.map((c: any) => (
             <div key={c.id}>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
@@ -391,7 +391,7 @@ function CommentsDialog({ isOpen, onClose, comments, onAddComment } : any) {
             <div className="shadow-lg rounded-sm bg-[#2d3440] p-4">
               <textarea
                 value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
+                onChange={(e: any)  => setNewComment(e.target.value)}
                 placeholder="Enter comment"
                 rows={3}
                 className="w-full bg-white border border-none rounded-lg px-3 py-2 text-sm text-gray-900"
@@ -427,7 +427,7 @@ function CommentsDialog({ isOpen, onClose, comments, onAddComment } : any) {
 // ─── Root Comment Component ───────────────────────────────────────────────────
 export default function CommentComponent() {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [comments, setComments] = useState(INITIAL_COMMENTS);
+  const [comments, setComments] = useState<any[]>(INITIAL_COMMENTS);
   const [showFieldPanel, setShowFieldPanel] = useState(true);
 
  function handleAddComment(newComment: any) {
