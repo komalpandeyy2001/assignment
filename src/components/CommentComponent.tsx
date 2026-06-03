@@ -25,7 +25,7 @@ const INITIAL_COMMENTS = [
 ];
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
-function Avatar({ initials, color } : any) {
+function Avatar({ initials, color }: any) {
   return (
     <div
       className={`w-8 h-8 rounded-full ${color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}
@@ -36,7 +36,31 @@ function Avatar({ initials, color } : any) {
 }
 
 // ─── File Attachment Row ──────────────────────────────────────────────────────
-function FileAttachment({ name, size }: any) {
+function FileAttachment({ name, size, rawFile }: any) {
+
+  const handlePreview = () => {
+    if (!rawFile) return;
+
+    const fileURL = URL.createObjectURL(rawFile);
+    window.open(fileURL, "_blank");
+  };
+
+  const handleDownload = () => {
+    if (!rawFile) return;
+
+    const url = URL.createObjectURL(rawFile);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = rawFile.name;
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-3 py-3 shadow-sm">
 
@@ -65,7 +89,7 @@ function FileAttachment({ name, size }: any) {
       <div className="flex items-center gap-3">
 
         {/* Preview */}
-        <button className="text-gray-500 hover:text-blue-600 transition border border-gray-200 rounded-lg p-2">
+        <button onClick={handlePreview} className="text-gray-500 hover:text-blue-600 transition border border-gray-200 rounded-lg p-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-5 h-5"
@@ -89,7 +113,7 @@ function FileAttachment({ name, size }: any) {
         </button>
 
         {/* Download */}
-        <button className="text-gray-500 hover:text-green-600 transition border border-gray-200 rounded-lg p-2">
+        <button onClick={handleDownload} className="text-gray-500 hover:text-green-600 transition border border-gray-200 rounded-lg p-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-5 h-5"
@@ -122,9 +146,9 @@ function FieldCommentPanel() {
   const [state, setState] = useState(/** @type {CommentState} */("initial"));
   const [fieldValue, setFieldValue] = useState("");
   const [comment, setComment] = useState("");
-const [file, setFile] = useState<any>(null);
- const [submittedData, setSubmittedData] = useState<any>(null);
-const fileInputRef = useRef<any>(null);
+  const [file, setFile] = useState<any>(null);
+  const [submittedData, setSubmittedData] = useState<any>(null);
+  const fileInputRef = useRef<any>(null);
 
   const isEditing = fieldValue.trim() || comment.trim() || file;
 
@@ -138,7 +162,13 @@ const fileInputRef = useRef<any>(null);
     setSubmittedData({
       field: fieldValue,
       comment,
-      file: file ? { name: file.name, size: formatSize(file.size) } : null,
+      file: file
+        ? {
+          name: file.name,
+          size: formatSize(file.size),
+          rawFile: file,
+        }
+        : null,
     });
     setState("submitted");
   }
@@ -162,7 +192,7 @@ const fileInputRef = useRef<any>(null);
   function handleDelete() {
     handleDiscard();
   }
-function formatSize(bytes: any) {
+  function formatSize(bytes: any) {
     if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
     if (bytes >= 1024) return `${(bytes / 1024).toFixed(1)}KB`;
     return `${bytes}B`;
@@ -191,6 +221,7 @@ function formatSize(bytes: any) {
             <FileAttachment
               name={submittedData.file.name}
               size={submittedData.file.size}
+              rawFile={submittedData.file.rawFile}
             />
           </div>
         )}
@@ -229,7 +260,7 @@ function formatSize(bytes: any) {
         <input
           type="text"
           value={fieldValue}
-          onChange={(e: any)  => setFieldValue(e.target.value)}
+          onChange={(e: any) => setFieldValue(e.target.value)}
           placeholder="Placeholder"
           className="w-full border border-gray-300 rounded px-3 py-1.5 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors"
         />
@@ -240,7 +271,7 @@ function formatSize(bytes: any) {
         <label className="text-xs text-gray-400 block mb-1">Comment</label>
         <textarea
           value={comment}
-        onChange={(e: any) => setComment(e.target.value)}
+          onChange={(e: any) => setComment(e.target.value)}
           placeholder="Please provide a reason for the change"
           rows={3}
           className="w-full border border-gray-300 rounded px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-gray-400 resize-none transition-colors"
@@ -265,7 +296,7 @@ function formatSize(bytes: any) {
           ref={fileInputRef}
           type="file"
           className="hidden"
-          onChange={(e: any)  => setFile(e.target.files?.[0] || null)}
+          onChange={(e: any) => setFile(e.target.files?.[0] || null)}
         />
       </div>
 
@@ -290,9 +321,9 @@ function formatSize(bytes: any) {
 }
 
 // ─── Comments Dialog (second image functionality) ─────────────────────────────
-function CommentsDialog({ isOpen, onClose, comments, onAddComment } : any) {
+function CommentsDialog({ isOpen, onClose, comments, onAddComment }: any) {
   const [newComment, setNewComment] = useState("");
- const listRef = useRef<any>(null);
+  const listRef = useRef<any>(null);
 
   function handleSubmit() {
     if (!newComment.trim()) return;
@@ -349,7 +380,7 @@ function CommentsDialog({ isOpen, onClose, comments, onAddComment } : any) {
         >
 
 
-   {comments.map((c: any) => (
+          {comments.map((c: any) => (
             <div key={c.id}>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
@@ -373,6 +404,7 @@ function CommentsDialog({ isOpen, onClose, comments, onAddComment } : any) {
                   <FileAttachment
                     name={c.file.name}
                     size={c.file.size}
+                    rawFile={c.file.rawFile}
                   />
                 </div>
               )}
@@ -391,7 +423,7 @@ function CommentsDialog({ isOpen, onClose, comments, onAddComment } : any) {
             <div className="shadow-lg rounded-sm bg-[#2d3440] p-4">
               <textarea
                 value={newComment}
-                onChange={(e: any)  => setNewComment(e.target.value)}
+                onChange={(e: any) => setNewComment(e.target.value)}
                 placeholder="Enter comment"
                 rows={3}
                 className="w-full bg-white border border-none rounded-lg px-3 py-2 text-sm text-gray-900"
@@ -428,9 +460,9 @@ function CommentsDialog({ isOpen, onClose, comments, onAddComment } : any) {
 export default function CommentComponent() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [comments, setComments] = useState<any[]>(INITIAL_COMMENTS);
-const [showFieldPanel] = useState(true);
+  const [showFieldPanel] = useState(true);
 
- function handleAddComment(newComment: any) {
+  function handleAddComment(newComment: any) {
     setComments((prev) => [...prev, newComment]);
   }
 
@@ -459,7 +491,7 @@ const [showFieldPanel] = useState(true);
             )}
           </button>
         </div>
-{showFieldPanel && <FieldCommentPanel />}
+        {showFieldPanel && <FieldCommentPanel />}
       </div>
 
 
